@@ -11,6 +11,9 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\VerifyEmailRequest;
 use App\Http\Requests\ResendEmailVerificationRequest;
 use App\Customs\Services\EmailVerificationService;
+use App\Http\Requests\ResetPasswordRequest;
+use Illuminate\Support\Facades\Hash;
+
 
 class AuthController extends Controller
 {
@@ -88,6 +91,58 @@ class AuthController extends Controller
        {
             return $this->service->resendLink($request->email);
        }
+
+       /**
+        * Reset password
+        */
+        public function resetPassword(ResetPasswordRequest $request)
+        {
+
+                    $user = User::where('email', auth()->user()->email)->first();
+                        if ($user) {
+                            if (Hash::check($request->current_password, $user->password)) {
+                                if ($request->password != $request->current_password) {
+                                    if ($request->password == $request->password_confirmation) {
+                                        $hashedPassword = bcrypt($request->password);
+                                        $user->password = $hashedPassword;
+                                        $user->save();
+
+                                        return response()->json([
+                                            'status' => 'success',
+                                            'message' => 'Password updated successfully'
+                                        ], 200);
+                                    } else {
+                                        return response()->json([
+                                            'status' => 'failed',
+                                            'message' => 'Password and confirmation password do not match'
+                                        ], 403);
+
+                                    }
+                                } else {
+                                    return response()->json([
+                                        'status' => 'failed',
+                                        'message' => 'Your password must be different from the current password'
+                                    ], 403);
+
+                                }
+                            } else {
+                                return response()->json([
+                                    'status' => 'failed',
+                                    'message' => 'Invalid current password'
+                                ], 401);
+
+                            }
+                        } else {
+                            return response()->json([
+                                'status' => 'failed',
+                                'message' => 'User not found'
+                            ], 404);
+
+                     }
+
+            }
+
+
 
     /**
      * Return JWT access  token

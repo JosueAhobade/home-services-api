@@ -27,3 +27,7 @@ Route::post('/auth/login',[AuthController::class,'login']);
 Route::post('/auth/verify_email',[AuthController::class,'verifyUserEmail']);
 
 Route::post('/auth/resend_link',[AuthController::class,'resendEmailVerificationLink']);
+
+Route::post('/auth/reset_password',[AuthController::class,'resetPassword']);
+
+Route::middleware(['auth:api','verified'])->post('/auth/reset_password', [AuthController::class,'resetPassword']);
