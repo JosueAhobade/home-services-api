@@ -9,6 +9,24 @@ use App\Models\Consultations as consult;
 
 class ConsultationController extends Controller
 {
+    public function index()
+    {
+        $consult = consult::select('*')
+                ->where("consultations.patientId",auth()->user()->id)
+                ->get();
+        if ($consult){
+            return response()->json([
+                'status_code' => 200,
+                'data' =>$consult
+            ]);
+        }
+        else{
+            return response()->json([
+                'status_code' => 404,
+                'status_message' => 'Aucune consultation  trouvé',
+            ]);
+        }
+    }
     public function store(CreateConsultationRequest $request) {
 
         try{

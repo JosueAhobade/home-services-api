@@ -11,6 +11,26 @@ use App\Models\Enfants as child;
 
 class ChildController extends Controller
 {
+
+    public function index()
+    {
+        $child = child::select('*')
+                ->where("enfants.parentId",auth()->user()->id)
+                ->get();
+        if ($child){
+            return response()->json([
+                'status_code' => 200,
+                'data' =>$child
+            ]);
+        }
+        else{
+            return response()->json([
+                'status_code' => 404,
+                'status_message' => 'Aucun enfant trouvé',
+            ]);
+        }
+
+    }
     public function addChild(CreateChildRequest $request)
     {
         try{

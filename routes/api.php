@@ -31,12 +31,18 @@ Route::post('/auth/reset_password',[App\Http\Controllers\Api\Auth\AuthController
 
 Route::middleware(['auth:api','verified'])->post('/auth/reset_password', [App\Http\Controllers\Api\Auth\AuthController::class,'resetPassword']);
 
+Route::middleware(['auth:api','verified'])->get('/list_child', [App\Http\Controllers\Api\ChildController::class,'index']);
+
 Route::middleware(['auth:api','verified'])->post('/addchild', [App\Http\Controllers\Api\ChildController::class,'addChild']);
 
 Route::middleware(['auth:api','verified'])->post('/editchild{child}', [App\Http\Controllers\Api\ChildController::class,'editChild']);
 
 Route::middleware(['auth:api','verified'])->post('/deletechild{child}', [App\Http\Controllers\Api\ChildController::class,'deleteChild']);
 
+Route::middleware(['auth:api','verified'])->get('/list_consultation', [App\Http\Controllers\ConsultationController::class,'index']);
+
 Route::middleware(['auth:api','verified'])->post('/createconsultation', [App\Http\Controllers\ConsultationController::class,'store']);
+
+Route::get('/list_motif', [App\Http\Controllers\MotifConsultation::class,'index']);
 
 
